@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chore Tracker - Parent Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+        }
+
+        .nav-links {
+            margin-top: 15px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .nav-link.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            flex: 1;
+            min-width: 120px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        input[type="number"] {
+            max-width: 100px;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .list {
+            list-style: none;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+        }
+
+        .list-item:hover {
+            transform: translateX(5px);
+        }
+
+        .child-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+
+        .child-info {
+            flex: 1;
+        }
+
+        .child-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .piggy-bank {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .piggy-bank-amount {
+            font-weight: bold;
+            color: #4caf50;
+            font-size: 16px;
+        }
+
+        .child-link {
+            background: #4caf50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+
+        .child-link:hover {
+            background: #43a047;
+        }
+
+        .chore-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background: #ee5a5a;
+        }
+
+        .spend-btn {
+            background: #ff9800;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .spend-btn:hover {
+            background: #f57c00;
+        }
+
+        .chore-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .chore-item.completed {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .chore-item.recurring {
+            border-left-color: #ff9800;
+        }
+
+        .chore-item.recurring.completed {
+            border-left-color: #4caf50;
+        }
+
+        .chore-checkbox {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #4caf50;
+        }
+
+        .chore-details {
+            flex: 1;
+        }
+
+        .chore-name {
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chore-item.completed .chore-name span {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .chore-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+            flex-wrap: wrap;
+        }
+
+        .chore-points {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            background: #fff3cd;
+            padding: 3px 10px;
+            border-radius: 15px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .chore-item.completed .chore-points {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .recurring-badge {
+            background: #ff9800;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .frequency-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #888;
+            padding: 30px;
+            font-style: italic;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .filter-section {
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 100px;
+            flex: 1;
+        }
+
+        .stat-card.gold {
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+        }
+
+        .stat-card.orange {
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .piggy-bank-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .piggy-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .piggy-card::before {
+            content: '🐷';
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.2;
+            top: -10px;
+            right: -10px;
+        }
+
+        .piggy-card-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .piggy-card-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #e65100;
+        }
+
+        .piggy-card-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .cancel-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #ff9800;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .reset-info {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .reset-info span {
+            color: #1976d2;
+            font-size: 14px;
+        }
+
+        .reset-btn {
+            background: #ff9800;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .reset-btn:hover {
+            background: #f57c00;
+        }
+
+        .frequency-select {
+            max-width: 140px;
+        }
+
+        .copy-link-btn {
+            background: #2196f3;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .copy-link-btn:hover {
+            background: #1976d2;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 3000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .alert.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌟 Chore Tracker</h1>
+            <p class="header-subtitle">Parent Admin Dashboard</p>
+            <nav class="nav-links">
+                <a href="parent.html" class="nav-link active">👨‍👩‍👧‍👦 Parent Admin</a>
+                <a href="child.html" class="nav-link">👶 Child Dashboard</a>
+            </nav>
+        </header>
+
+        <!-- Stats Section -->
+        <div class="section">
+            <div class="stats" id="stats"></div>
+        </div>
+
+        <!-- Piggy Banks Section -->
+        <div class="section">
+            <h2>🐷 Piggy Banks</h2>
+            <div class="piggy-bank-cards" id="piggyBanks"></div>
+        </div>
+
+        <!-- Add Child Section -->
+        <div class="section">
+            <h2>👦 Manage Children</h2>
+            <div class="form-row">
+                <input type="text" id="childName" placeholder="Enter child's name" onkeypress="handleEnterKey(event, addChild)">
+                <button onclick="addChild()">Add Child</button>
+            </div>
+            <ul class="list" id="childrenList"></ul>
+        </div>
+
+        <!-- Add Chore Section -->
+        <div class="section">
+            <h2>📋 Create & Assign Chores</h2>
+            <div class="form-row">
+                <input type="text" id="choreName" placeholder="Enter chore name">
+                <input type="number" id="chorePoints" placeholder="Points" min="1" value="10">
+                <select id="childSelect">
+                    <option value="">Assign to...</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="choreRecurring" onchange="toggleRecurringOptions()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Recurring Chore</span>
+                </div>
+                <select id="choreFrequency" class="frequency-select" style="display: none;">
+                    <option value="daily">Daily</option>
+                    <option value="weekdays">Weekdays Only</option>
+                    <option value="weekends">Weekends Only</option>
+                    <option value="weekly">Weekly</option>
+                </select>
+                <button onclick="addChore()">Add Chore</button>
+            </div>
+        </div>
+
+        <!-- Chores List Section -->
+        <div class="section">
+            <h2>✅ All Chores</h2>
+            <div class="reset-info" id="resetInfo"></div>
+            <div class="filter-section">
+                <div class="tabs">
+                    <div class="tab active" onclick="setFilter('all')">All</div>
+                    <div class="tab" onclick="setFilter('pending')">Pending</div>
+                    <div class="tab" onclick="setFilter('completed')">Completed</div>
+                    <div class="tab" onclick="setFilter('recurring')">Recurring</div>
+                </div>
+                <select id="filterChild" onchange="renderChores()" style="margin-top: 10px;">
+                    <option value="">All Children</option>
+                </select>
+            </div>
+            <div id="choresList"></div>
+        </div>
+    </div>
+
+    <!-- Spend Points Modal -->
+    <div class="modal-overlay" id="spendModal">
+        <div class="modal">
+            <h3>💰 Spend Points</h3>
+            <p id="spendModalText">How many points would you like to spend?</p>
+            <input type="number" id="spendAmount" placeholder="Points to spend" min="1">
+            <input type="text" id="spendReason" placeholder="What are they spending on? (optional)" style="margin-top: 10px;">
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeSpendModal()">Cancel</button>
+                <button onclick="confirmSpend()">Spend Points</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div class="alert" id="alert"></div>
+
+    <script>
+        // App State
+        let state = {
+            children: [],
+            chores: [],
+            filter: 'all',
+            transactions: [],
+            lastResetDate: null
+        };
+
+        let selectedChildForSpend = null;
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
+
+        // Utility Functions
+        function loadState() {
+            const saved = localStorage.getItem('choreTrackerState');
+            if (saved) {
+                state = JSON.parse(saved);
+                state.children.forEach(child => {
+                    if (child.piggyBank === undefined) child.piggyBank = 0;
+                });
+                if (!state.transactions) state.transactions = [];
+                if (!state.lastResetDate) state.lastResetDate = getTodayDateString();
+            } else {
+                state.lastResetDate = getTodayDateString();
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('choreTrackerState', JSON.stringify(state));
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function getTodayDateString() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getDayOfWeek() {
+            return new Date().getDay();
+        }
+
+        function isWeekday() {
+            const day = getDayOfWeek();
+            return day >= 1 && day <= 5;
+        }
+
+        function isWeekend() {
+            const day = getDayOfWeek();
+            return day === 0 || day === 6;
+        }
+
+        function isChoreActiveToday(chore) {
+            if (!chore.recurring) return true;
+            switch (chore.frequency) {
+                case 'daily': return true;
+                case 'weekdays': return isWeekday();
+                case 'weekends': return isWeekend();
+                case 'weekly':
+                    const createdDate = new Date(chore.createdAt);
+                    return createdDate.getDay() === getDayOfWeek();
+                default: return true;
+            }
+        }
+
+        function checkDailyReset() {
+            const today = getTodayDateString();
+            if (state.lastResetDate !== today) {
+                performDailyReset();
+                state.lastResetDate = today;
+                saveState();
+            }
+        }
+
+        function performDailyReset() {
+            state.chores.forEach(chore => {
+                if (chore.recurring) {
+                    chore.completed = false;
+                    chore.completedDate = null;
+                }
+            });
+        }
+
+        function manualReset() {
+            if (confirm('This will reset all recurring chores to incomplete. Points already earned will be kept. Continue?')) {
+                performDailyReset();
+                state.lastResetDate = getTodayDateString();
+                saveState();
+                renderAll();
+            }
+        }
+
+        function showAlert(message) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 3000);
+        }
+
+        function handleEnterKey(event, callback) {
+            if (event.key === 'Enter') callback();
+        }
+
+        function toggleRecurringOptions() {
+            const isRecurring = document.getElementById('choreRecurring').checked;
+            document.getElementById('choreFrequency').style.display = isRecurring ? 'block' : 'none';
+        }
+
+        function getFrequencyText(frequency) {
+            switch (frequency) {
+                case 'daily': return 'Daily';
+                case 'weekdays': return 'Weekdays';
+                case 'weekends': return 'Weekends';
+                case 'weekly': return 'Weekly';
+                default: return frequency;
+            }
+        }
+
+        // Child Functions
+        function addChild() {
+            const input = document.getElementById('childName');
+            const name = input.value.trim();
+            if (!name) {
+                showAlert('Please enter a name');
+                return;
+            }
+
+            const child = {
+                id: generateId(),
+                name: name,
+                color: colors[state.children.length % colors.length],
+                piggyBank: 0
+            };
+
+            state.children.push(child);
+            saveState();
+            input.value = '';
+            renderAll();
+            showAlert(`${name} has been added!`);
+        }
+
+        function deleteChild(id) {
+            const child = state.children.find(c => c.id === id);
+            if (confirm(`Delete ${child.name}? This will also delete all their chores.`)) {
+                state.children = state.children.filter(c => c.id !== id);
+                state.chores = state.chores.filter(c => c.childId !== id);
+                saveState();
+                renderAll();
+            }
+        }
+
+        function copyChildLink(childId) {
+            const url = `child.html?id=${childId}`;
+            navigator.clipboard.writeText(window.location.href.replace('parent.html', url))
+                .then(() => showAlert('Link copied to clipboard!'))
+                .catch(() => showAlert('Could not copy link'));
+        }
+
+        function openSpendModal(childId) {
+            selectedChildForSpend = childId;
+            const child = state.children.find(c => c.id === childId);
+            if (child) {
+                document.getElementById('spendModalText').textContent = 
+                    `${child.name} has ${child.piggyBank} points. How many would you like to spend?`;
+                document.getElementById('spendAmount').value = '';
+                document.getElementById('spendAmount').max = child.piggyBank;
+                document.getElementById('spendReason').value = '';
+                document.getElementById('spendModal').classList.add('active');
+            }
+        }
+
+        function closeSpendModal() {
+            selectedChildForSpend = null;
+            document.getElementById('spendModal').classList.remove('active');
+        }
+
+        function confirmSpend() {
+            if (!selectedChildForSpend) return;
+            
+            const child = state.children.find(c => c.id === selectedChildForSpend);
+            const amount = parseInt(document.getElementById('spendAmount').value);
+            const reason = document.getElementById('spendReason').value.trim();
+            
+            if (!amount || amount < 1) {
+                showAlert('Please enter a valid amount');
+                return;
+            }
+
+            if (amount > child.piggyBank) {
+                showAlert(`${child.name} only has ${child.piggyBank} points!`);
+                return;
+            }
+
+            child.piggyBank -= amount;
+            state.transactions.push({
+                id: generateId(),
+                childId: child.id,
+                type: 'spent',
+                amount: -amount,
+                description: reason || 'Points spent',
+                date: new Date().toISOString()
+            });
+
+            saveState();
+            closeSpendModal();
+            renderAll();
+            showAlert(`${child.name} spent ${amount} points!`);
+        }
+
+        // Chore Functions
+        function addChore() {
+            const nameInput = document.getElementById('choreName');
+            const pointsInput = document.getElementById('chorePoints');
+            const childSelect = document.getElementById('childSelect');
+            const recurringCheckbox = document.getElementById('choreRecurring');
+            const frequencySelect = document.getElementById('choreFrequency');
+            
+            const name = nameInput.value.trim();
+            const points = parseInt(pointsInput.value) || 10;
+            const childId = childSelect.value;
+            const isRecurring = recurringCheckbox.checked;
+            const frequency = frequencySelect.value;
+
+            if (!name) {
+                showAlert('Please enter a chore name');
+                return;
+            }
+
+            if (!childId) {
+                showAlert('Please select a child');
+                return;
+            }
+
+            if (points < 1) {
+                showAlert('Points must be at least 1');
+                return;
+            }
+
+            const chore = {
+                id: generateId(),
+                name: name,
+                points: points,
+                childId: childId,
+                completed: false,
+                recurring: isRecurring,
+                frequency: isRecurring ? frequency : null,
+                createdAt: new Date().toISOString(),
+                completedDate: null
+            };
+
+            state.chores.push(chore);
+            saveState();
+            
+            nameInput.value = '';
+            pointsInput.value = '10';
+            recurringCheckbox.checked = false;
+            frequencySelect.style.display = 'none';
+            frequencySelect.value = 'daily';
+            
+            renderAll();
+            showAlert(`Chore "${name}" has been added!`);
+        }
+
+        function toggleChore(id) {
+            const chore = state.chores.find(c => c.id === id);
+            if (chore) {
+                const child = state.children.find(c => c.id === chore.childId);
+                
+                if (!chore.completed) {
+                    chore.completed = true;
+                    chore.completedDate = new Date().toISOString();
+                    if (child) {
+                        child.piggyBank += chore.points;
+                        state.transactions.push({
+                            id: generateId(),
+                            childId: child.id,
+                            type: 'earned',
+                            amount: chore.points,
+                            description: `Completed: ${chore.name}`,
+                            date: new Date().toISOString()
+                        });
+                    }
+                } else {
+                    chore.completed = false;
+                    chore.completedDate = null;
+                    if (child) {
+                        child.piggyBank = Math.max(0, child.piggyBank - chore.points);
+                        state.transactions.push({
+                            id: generateId(),
+                            childId: child.id,
+                            type: 'reversed',
+                            amount: -chore.points,
+                            description: `Reversed: ${chore.name}`,
+                            date: new Date().toISOString()
+                        });
+                    }
+                }
+                saveState();
+                renderAll();
+            }
+        }
+
+        function deleteChore(id) {
+            const chore = state.chores.find(c => c.id === id);
+            if (chore && chore.completed) {
+                if (!confirm('This chore was completed. Deleting it will NOT remove the earned points. Continue?')) {
+                    return;
+                }
+            }
+            state.chores = state.chores.filter(c => c.id !== id);
+            saveState();
+            renderAll();
+        }
+
+        function setFilter(filter) {
+            state.filter = filter;
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent.toLowerCase() === filter) {
+                    tab.classList.add('active');
+                }
+            });
+            saveState();
+            renderChores();
+        }
+
+        // Render Functions
+        function renderStats() {
+            const activeChores = state.chores.filter(c => !c.recurring || isChoreActiveToday(c));
+            const totalChores = activeChores.length;
+            const completedChores = activeChores.filter(c => c.completed).length;
+            const pendingChores = totalChores - completedChores;
+            const totalChildren = state.children.length;
+            const totalPoints = state.children.reduce((sum, child) => sum + child.piggyBank, 0);
+            const recurringChores = state.chores.filter(c => c.recurring).length;
+
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalChildren}</div>
+                    <div class="stat-label">Children</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalChores}</div>
+                    <div class="stat-label">Today's Chores</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${pendingChores}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${completedChores}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-number">${recurringChores}</div>
+                    <div class="stat-label">Recurring</div>
+                </div>
+                <div class="stat-card gold">
+                    <div class="stat-number">${totalPoints}</div>
+                    <div class="stat-label">Total Points</div>
+                </div>
+            `;
+        }
+
+        function renderResetInfo() {
+            const container = document.getElementById('resetInfo');
+            const recurringCount = state.chores.filter(c => c.recurring).length;
+            const completedRecurring = state.chores.filter(c => c.recurring && c.completed).length;
+            const lastReset = state.lastResetDate ? new Date(state.lastResetDate).toLocaleDateString() : 'Never';
+            
+            container.innerHTML = `
+                <span>🔄 Recurring chores reset daily | Last reset: <strong>${lastReset}</strong> | 
+                Today's progress: <strong>${completedRecurring}/${recurringCount}</strong> recurring done</span>
+                <button class="reset-btn" onclick="manualReset()">Reset Now</button>
+            `;
+        }
+
+        function renderPiggyBanks() {
+            const container = document.getElementById('piggyBanks');
+            if (state.children.length === 0) {
+                container.innerHTML = '<div class="empty-message">Add children to see their piggy banks!</div>';
+                return;
+            }
+
+            container.innerHTML = state.children.map(child => `
+                <div class="piggy-card">
+                    <div class="piggy-card-name">${child.name}</div>
+                    <div class="piggy-card-amount">${child.piggyBank}</div>
+                    <div class="piggy-card-label">points</div>
+                </div>
+            `).join('');
+        }
+
+        function renderChildren() {
+            const list = document.getElementById('childrenList');
+            if (state.children.length === 0) {
+                list.innerHTML = '<div class="empty-message">No children added yet. Add a child to get started!</div>';
+                return;
+            }
+
+            list.innerHTML = state.children.map(child => {
+                const choreCount = state.chores.filter(c => c.childId === child.id && !c.completed && isChoreActiveToday(c)).length;
+                return `
+                    <li class="list-item">
+                        <div class="child-avatar" style="background: ${child.color}">
+                            ${child.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="child-info">
+                            <span class="child-name">${child.name}</span>
+                            <div class="piggy-bank">
+                                <span>🐷</span>
+                                <span class="piggy-bank-amount">${child.piggyBank} points</span>
+                            </div>
+                        </div>
+                        <span class="chore-count">${choreCount} pending</span>
+                        <a href="child.html?id=${child.id}" class="child-link">View Dashboard</a>
+                        <button class="copy-link-btn" onclick="copyChildLink('${child.id}')">📋 Copy Link</button>
+                        <button class="spend-btn" onclick="openSpendModal('${child.id}')">Spend</button>
+                        <button class="delete-btn" onclick="deleteChild('${child.id}')">Delete</button>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        function renderChildSelects() {
+            const options = state.children.map(c => 
+                `<option value="${c.id}">${c.name}</option>`
+            ).join('');
+
+            document.getElementById('childSelect').innerHTML = '<option value="">Assign to...</option>' + options;
+            document.getElementById('filterChild').innerHTML = '<option value="">All Children</option>' + options;
+        }
+
+        function renderChores() {
+            const container = document.getElementById('choresList');
+            const filterChild = document.getElementById('filterChild').value;
+            
+            let filteredChores = state.chores;
+
+            if (filterChild) {
+                filteredChores = filteredChores.filter(c => c.childId === filterChild);
+            }
+
+            if (state.filter === 'pending') {
+                filteredChores = filteredChores.filter(c => !c.completed && isChoreActiveToday(c));
+            } else if (state.filter === 'completed') {
+                filteredChores = filteredChores.filter(c => c.completed);
+            } else if (state.filter === 'recurring') {
+                filteredChores = filteredChores.filter(c => c.recurring);
+            }
+
+            if (state.filter === 'all') {
+                filteredChores = filteredChores.filter(c => !c.recurring || isChoreActiveToday(c));
+            }
+
+            if (filteredChores.length === 0) {
+                container.innerHTML = '<div class="empty-message">No chores found. Create a chore above!</div>';
+                return;
+            }
+
+            container.innerHTML = filteredChores.map(chore => {
+                const child = state.children.find(c => c.id === chore.childId);
+                const isActive = isChoreActiveToday(chore);
+                
+                return `
+                    <div class="chore-item ${chore.completed ? 'completed' : ''} ${chore.recurring ? 'recurring' : ''}" 
+                         style="${!isActive && chore.recurring ? 'opacity: 0.5;' : ''}">
+                        <input 
+                            type="checkbox" 
+                            class="chore-checkbox" 
+                            ${chore.completed ? 'checked' : ''} 
+                            ${!isActive && chore.recurring ? 'disabled' : ''}
+                            onchange="toggleChore('${chore.id}')"
+                        >
+                        <div class="chore-details">
+                            <div class="chore-name">
+                                <span>${chore.name}</span>
+                                ${chore.recurring ? '<span class="recurring-badge">🔄 Recurring</span>' : ''}
+                            </div>
+                            <div class="chore-meta">
+                                <span>Assigned to: ${child ? child.name : 'Unknown'}</span>
+                                <span class="chore-points">⭐ ${chore.points} pts</span>
+                                ${chore.recurring ? `<span class="frequency-badge">${getFrequencyText(chore.frequency)}</span>` : ''}
+                                ${!isActive && chore.recurring ? '<span style="color: #f44336;">Not scheduled today</span>' : ''}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteChore('${chore.id}')">Delete</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderAll() {
+            renderStats();
+            renderResetInfo();
+            renderPiggyBanks();
+            renderChildren();
+            renderChildSelects();
+            renderChores();
+        }
+
+        // Initialize
+        loadState();
+        checkDailyReset();
+        renderAll();
+
+        setInterval(() => {
+            checkDailyReset();
+            renderAll();
+        }, 60000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Chores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+        }
+
+        .child-selector {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .child-selector h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .child-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .child-select-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .child-select-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .profile-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 48px;
+            margin: 0 auto 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .profile-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .piggy-bank-display {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .piggy-bank-display::before {
+            content: '🐷';
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.15;
+            top: -20px;
+            right: -20px;
+        }
+
+        .piggy-bank-label {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .piggy-bank-amount {
+            font-size: 64px;
+            font-weight: bold;
+            color: #e65100;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .piggy-bank-points-label {
+            font-size: 24px;
+            color: #888;
+        }
+
+        .progress-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .progress-count {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .chore-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .chore-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chore-item.completed {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .chore-item.recurring {
+            border-left-color: #ff9800;
+        }
+
+        .chore-item.recurring.completed {
+            border-left-color: #4caf50;
+        }
+
+        .chore-checkbox {
+            width: 35px;
+            height: 35px;
+            margin-right: 20px;
+            cursor: pointer;
+            accent-color: #4caf50;
+        }
+
+        .chore-details {
+            flex: 1;
+        }
+
+        .chore-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .chore-item.completed .chore-name {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .chore-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chore-points {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #fff3cd;
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: #856404;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .chore-item.completed .chore-points {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .recurring-badge {
+            background: #ff9800;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+            font-size: 18px;
+        }
+
+        .all-done {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .all-done-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .all-done-text {
+            font-size: 24px;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .all-done-subtext {
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .points-earned-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            color: white;
+            padding: 40px 60px;
+            border-radius: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            z-index: 2000;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .points-earned-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .points-earned-popup .points-icon {
+            font-size: 60px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .points-earned-popup .points-amount {
+            font-size: 56px;
+            display: block;
+            margin: 10px 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .switch-child-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .switch-child-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌟 My Chores</h1>
+            <p class="header-subtitle" id="headerSubtitle">Complete your chores to earn points!</p>
+            <a href="parent.html" class="back-link">← Parent Admin</a>
+        </header>
+
+        <!-- Child Selector (shown when no child is selected) -->
+        <div class="child-selector" id="childSelector">
+            <h2>Who are you?</h2>
+            <div class="child-buttons" id="childButtons"></div>
+        </div>
+
+        <!-- Child Dashboard (shown when child is selected) -->
+        <div id="childDashboard" style="display: none;">
+            <!-- Profile Section -->
+            <div class="section">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">A</div>
+                    <div class="profile-name" id="profileName">Child Name</div>
+                </div>
+
+                <div class="piggy-bank-display">
+                    <div class="piggy-bank-label">🐷 My Piggy Bank</div>
+                    <div class="piggy-bank-amount" id="piggyBankAmount">0</div>
+                    <div class="piggy-bank-points-label">points</div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span class="progress-title">Today's Progress</span>
+                        <span class="progress-count" id="progressCount">0/0</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chores Section -->
+            <div class="section">
+                <h2>📋 My Chores for Today</h2>
+                <div id="choresList"></div>
+            </div>
+
+            <button class="switch-child-btn" onclick="switchChild()">Switch Child</button>
+        </div>
+    </div>
+
+    <!-- Points Earned Popup -->
+    <div class="points-earned-popup" id="pointsPopup">
+        <span class="points-icon">🎉</span>
+        <span>Great Job!</span>
+        <span class="points-amount" id="pointsEarnedAmount">+10</span>
+        <span>Points Earned!</span>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas class="confetti" id="confetti"></canvas>
+
+    <script>
+        // App State
+        let state = {
+            children: [],
+            chores: [],
+            filter: 'all',
+            transactions: [],
+            lastResetDate: null
+        };
+
+        let currentChildId = null;
+
+        // Utility Functions
+        function loadState() {
+            const saved = localStorage.getItem('choreTrackerState');
+            if (saved) {
+                state = JSON.parse(saved);
+                state.children.forEach(child => {
+                    if (child.piggyBank === undefined) child.piggyBank = 0;
+                });
+                if (!state.transactions) state.transactions = [];
+                if (!state.lastResetDate) state.lastResetDate = getTodayDateString();
+            } else {
+                state.lastResetDate = getTodayDateString();
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('choreTrackerState', JSON.stringify(state));
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function getTodayDateString() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getDayOfWeek() {
+            return new Date().getDay();
+        }
+
+        function isWeekday() {
+            const day = getDayOfWeek();
+            return day >= 1 && day <= 5;
+        }
+
+        function isWeekend() {
+            const day = getDayOfWeek();
+            return day === 0 || day === 6;
+        }
+
+        function isChoreActiveToday(chore) {
+            if (!chore.recurring) return true;
+            switch (chore.frequency) {
+                case 'daily': return true;
+                case 'weekdays': return isWeekday();
+                case 'weekends': return isWeekend();
+                case 'weekly':
+                    const createdDate = new Date(chore.createdAt);
+                    return createdDate.getDay() === getDayOfWeek();
+                default: return true;
+            }
+        }
+
+        function checkDailyReset() {
+            const today = getTodayDateString();
+            if (state.lastResetDate !== today) {
+                state.chores.forEach(chore => {
+                    if (chore.recurring) {
+                        chore.completed = false;
+                        chore.completedDate = null;
+                    }
+                });
+                state.lastResetDate = today;
+                saveState();
+            }
+        }
+
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Confetti Animation
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const pieces = [];
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#ff9800', '#e91e63'];
+            
+            for (let i = 0; i < 150; i++) {
+                pieces.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    size: Math.random() * 10 + 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vx: (Math.random() - 0.5) * 20,
+                    vy: (Math.random() - 0.5) * 20 - 10,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+
+            let frame = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                pieces.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.5;
+                    p.rotation += p.rotationSpeed;
+                    
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+
+                frame++;
+                if (frame < 120) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            animate();
+        }
+
+        function showPointsPopup(points) {
+            const popup = document.getElementById('pointsPopup');
+            document.getElementById('pointsEarnedAmount').textContent = `+${points}`;
+            popup.classList.add('show');
+            launchConfetti();
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 2500);
+        }
+
+        // Child Selection
+        function selectChild(childId) {
+            currentChildId = childId;
+            document.getElementById('childSelector').style.display = 'none';
+            document.getElementById('childDashboard').style.display = 'block';
+            renderChildDashboard();
+        }
+
+        function switchChild() {
+            currentChildId = null;
+            document.getElementById('childSelector').style.display = 'block';
+            document.getElementById('childDashboard').style.display = 'none';
+            renderChildSelector();
+        }
+
+        // Toggle Chore
+        function toggleChore(id) {
+            const chore = state.chores.find(c => c.id === id);
+            if (chore && chore.childId === currentChildId) {
+                const child = state.children.find(c => c.id === chore.childId);
+                
+                if (!chore.completed) {
+                    chore.completed = true;
+                    chore.completedDate = new Date().toISOString();
+                    if (child) {
+                        child.piggyBank += chore.points;
+                        state.transactions.push({
+                            id: generateId(),
+                            childId: child.id,
+                            type: 'earned',
+                            amount: chore.points,
+                            description: `Completed: ${chore.name}`,
+                            date: new Date().toISOString()
+                        });
+                        showPointsPopup(chore.points);
+                    }
+                } else {
+                    chore.completed = false;
+                    chore.completedDate = null;
+                    if (child) {
+                        child.piggyBank = Math.max(0, child.piggyBank - chore.points);
+                        state.transactions.push({
+                            id: generateId(),
+                            childId: child.id,
+                            type: 'reversed',
+                            amount: -chore.points,
+                            description: `Reversed: ${chore.name}`,
+                            date: new Date().toISOString()
+                        });
+                    }
+                }
+                saveState();
+                renderChildDashboard();
+            }
+        }
+
+        // Render Functions
+        function renderChildSelector() {
+            const container = document.getElementById('childButtons');
+            
+            if (state.children.length === 0) {
+                container.innerHTML = '<p style="color: #888;">No children have been added yet. Ask a parent to add you!</p>';
+                return;
+            }
+
+            container.innerHTML = state.children.map(child => `
+                <button class="child-select-btn" style="background: ${child.color}" onclick="selectChild('${child.id}')">
+                    ${child.name}
+                </button>
+            `).join('');
+        }
+
+        function renderChildDashboard() {
+            const child = state.children.find(c => c.id === currentChildId);
+            if (!child) {
+                switchChild();
+                return;
+            }
+
+            // Update profile
+            document.getElementById('profileAvatar').textContent = child.name.charAt(0).toUpperCase();
+            document.getElementById('profileAvatar').style.background = child.color;
+            document.getElementById('profileName').textContent = child.name;
+            document.getElementById('piggyBankAmount').textContent = child.piggyBank;
+
+            // Get child's active chores
+            const childChores = state.chores.filter(c => 
+                c.childId === currentChildId && isChoreActiveToday(c)
+            );
+            const completedCount = childChores.filter(c => c.completed).length;
+            const totalCount = childChores.length;
+            const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
+            // Update progress
+            document.getElementById('progressCount').textContent = `${completedCount}/${totalCount}`;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+            // Render chores
+            const container = document.getElementById('choresList');
+            
+            if (childChores.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-message">
+                        <p>🎉 No chores assigned for today!</p>
+                        <p style="font-size: 14px; margin-top: 10px;">Enjoy your free time!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Check if all done
+            if (completedCount === totalCount && totalCount > 0) {
+                container.innerHTML = `
+                    <div class="all-done">
+                        <div class="all-done-icon">🏆</div>
+                        <div class="all-done-text">All Done!</div>
+                        <div class="all-done-subtext">You completed all your chores today!</div>
+                    </div>
+                ` + childChores.map(chore => renderChoreItem(chore)).join('');
+            } else {
+                // Sort: incomplete first, then completed
+                const sortedChores = [...childChores].sort((a, b) => a.completed - b.completed);
+                container.innerHTML = sortedChores.map(chore => renderChoreItem(chore)).join('');
+            }
+        }
+
+        function renderChoreItem(chore) {
+            return `
+                <div class="chore-item ${chore.completed ? 'completed' : ''} ${chore.recurring ? 'recurring' : ''}" 
+                     onclick="toggleChore('${chore.id}')">
+                    <input 
+                        type="checkbox" 
+                        class="chore-checkbox" 
+                        ${chore.completed ? 'checked' : ''} 
+                        onclick="event.stopPropagation(); toggleChore('${chore.id}')"
+                    >
+                    <div class="chore-details">
+                        <div class="chore-name">${chore.name}</div>
+                        <div class="chore-meta">
+                            <span class="chore-points">⭐ ${chore.points} pts</span>
+                            ${chore.recurring ? '<span class="recurring-badge">🔄 Daily</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize
+        function init() {
+            loadState();
+            checkDailyReset();
+
+            // Check for child ID in URL
+            const childIdFromUrl = getUrlParameter('id');
+            if (childIdFromUrl) {
+                const child = state.children.find(c => c.id === childIdFromUrl);
+                if (child) {
+                    selectChild(childIdFromUrl);
+                    return;
+                }
+            }
+
+            // If only one child, auto-select
+            if (state.children.length === 1) {
+                selectChild(state.children[0].id);
+            } else {
+                renderChildSelector();
+            }
+        }
+
+        init();
+
+        // Auto-refresh every minute
+        setInterval(() => {
+            loadState();
+            checkDailyReset();
+            if (currentChildId) {
+                renderChildDashboard();
+            }
+        }, 60000);
+    </script>
+</body>
+</html>
